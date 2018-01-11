@@ -148,6 +148,8 @@ class TestPagerDutyOutputV2(object):
 @mock_s3
 @mock_kms
 @patch('stream_alert.alert_processor.outputs.output_base.OutputDispatcher.MAX_RETRY_ATTEMPTS', 1)
+@patch('stream_alert.alert_processor.outputs.pagerduty.PagerDutyIncidentOutput.BACKOFF_MAX', 0)
+@patch('stream_alert.alert_processor.outputs.pagerduty.PagerDutyIncidentOutput.BACKOFF_TIME', 0)
 class TestPagerDutyIncidentOutput(object):
     """Test class for PagerDutyIncidentOutput"""
     DESCRIPTOR = 'unit_test_pagerduty-incident'

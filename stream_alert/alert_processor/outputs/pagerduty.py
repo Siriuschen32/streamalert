@@ -204,8 +204,8 @@ class PagerDutyIncidentOutput(OutputDispatcher):
     SERVICES_ENDPOINT = 'services'
     PRIORITIES_ENDPOINT = 'priorities'
 
-    BACKOFF_MAX_RETRIES = 3
-    BACKOFF_INTERVAL_TIME = 5
+    BACKOFF_MAX = 3
+    BACKOFF_TIME = 5
 
     def __init__(self, *args, **kwargs):
         OutputDispatcher.__init__(self, *args, **kwargs)
@@ -297,8 +297,8 @@ class PagerDutyIncidentOutput(OutputDispatcher):
 
     @backoff.on_exception(backoff.constant,
                           PagerdutySearchDelay,
-                          max_tries=BACKOFF_MAX_RETRIES,
-                          interval=BACKOFF_INTERVAL_TIME,
+                          max_tries=BACKOFF_MAX,
+                          interval=BACKOFF_TIME,
                           on_backoff=backoff_handler,
                           on_success=success_handler,
                           on_giveup=giveup_handler)
