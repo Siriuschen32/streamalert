@@ -446,6 +446,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
+    #pylint: disable-msg=too-many-arguments
     def test_dispatch_success_good_user(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Good User"""
         # GET /users, /users, /services
@@ -481,6 +482,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
+    #pylint: disable-msg=too-many-arguments
     def test_dispatch_success_good_policy(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Good Policy"""
          # GET /users, /escalation_policies, /services
@@ -517,6 +519,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
+    #pylint: disable-msg=too-many-arguments
     def test_dispatch_success_with_priority(self,
                                             get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success With Priority"""
@@ -561,6 +564,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
+    #pylint: disable-msg=too-many-arguments
     def test_dispatch_success_bad_user(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Bad User"""
         # GET /users, /users, /escalation_policies, /services
@@ -599,6 +603,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
+    #pylint: disable-msg=too-many-arguments
     def test_dispatch_success_no_context(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, No Context"""
         # GET /users, /escalation_policies, /services
@@ -652,6 +657,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
+    #pylint: disable-msg=too-many-arguments
     def test_dispatch_success_bad_policy(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Bad Policy"""
         # GET /users, /escalation_policies, /escalation_policies, /services
