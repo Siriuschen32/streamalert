@@ -148,7 +148,7 @@ class TestPagerDutyOutputV2(object):
 @mock_s3
 @mock_kms
 @patch('stream_alert.alert_processor.outputs.output_base.OutputDispatcher.MAX_RETRY_ATTEMPTS', 1)
-@patch('stream_alert.alert_processor.outputs.pagerduty.PagerDutyIncidentOutput.BACKOFF_MAX', 0)
+@patch('stream_alert.alert_processor.outputs.pagerduty.PagerDutyIncidentOutput.BACKOFF_MAX', 1)
 @patch('stream_alert.alert_processor.outputs.pagerduty.PagerDutyIncidentOutput.BACKOFF_TIME', 0)
 class TestPagerDutyIncidentOutput(object):
     """Test class for PagerDutyIncidentOutput"""
@@ -183,7 +183,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_check_exists_get_id(self, get_mock):
         """PagerDutyIncidentOutput - Check Exists Get ID"""
-        # /check
+        # GET /check
         get_mock.return_value.status_code = 200
         json_check = {'check': [{'id': 'checked_id'}]}
         get_mock.return_value.json.return_value = json_check
@@ -203,7 +203,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_check_exists_no_get_id(self, get_mock):
         """PagerDutyIncidentOutput - Check Exists No Get Id"""
-        # /check
+        # GET /check
         get_mock.return_value.status_code = 200
         json_check = {'check': [{'id': 'checked_id'}]}
         get_mock.return_value.json.return_value = json_check
@@ -234,7 +234,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_policy_verify_success_no_default(self, get_mock):
         """PagerDutyIncidentOutput - Policy Verify Success (No Default)"""
-        # /escalation_policies
+        # GET /escalation_policies
         get_mock.return_value.status_code = 200
         json_check = {'escalation_policies': [{'id': 'good_policy_id'}]}
         get_mock.return_value.json.return_value = json_check
@@ -246,7 +246,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_policy_verify_success_default(self, get_mock):
         """PagerDutyIncidentOutput - Policy Verify Success (Default)"""
-        # /escalation_policies
+        # GET /escalation_policies
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 200])
         json_check_bad = {'no_escalation_policies': [{'id': 'bad_policy_id'}]}
         json_check_good = {'escalation_policies': [{'id': 'good_policy_id'}]}
@@ -259,7 +259,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_policy_verify_fail_default(self, get_mock):
         """PagerDutyIncidentOutput - Policy Verify Fail (Default)"""
-        # /not_escalation_policies
+        # GET /not_escalation_policies
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[400, 400])
         json_check_bad = {'escalation_policies': [{'id': 'bad_policy_id'}]}
         json_check_bad_default = {'escalation_policies': [{'id': 'good_policy_id'}]}
@@ -270,7 +270,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_policy_verify_fail_no_default(self, get_mock):
         """PagerDutyIncidentOutput - Policy Verify Fail (No Default)"""
-        # /not_escalation_policies
+        # GET /not_escalation_policies
         get_mock.return_value.status_code = 200
         json_check = {'not_escalation_policies': [{'not_id': 'verified_policy_id'}]}
         get_mock.return_value.json.return_value = json_check
@@ -280,7 +280,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_service_verify_success(self, get_mock):
         """PagerDutyIncidentOutput - Service Verify Success"""
-        # /services
+        # GET /services
         get_mock.return_value.status_code = 200
         json_check = {'services': [{'id': 'verified_service_id'}]}
         get_mock.return_value.json.return_value = json_check
@@ -301,7 +301,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_item_verify_success(self, get_mock):
         """PagerDutyIncidentOutput - Item Verify Success"""
-        # /items
+        # GET /items
         get_mock.return_value.status_code = 200
         json_check = {'items': [{'id': 'verified_item_id'}]}
         get_mock.return_value.json.return_value = json_check
@@ -314,7 +314,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_item_verify_no_get_id_success(self, get_mock):
         """PagerDutyIncidentOutput - Item Verify No Get Id Success"""
-        # /items
+        # GET /items
         get_mock.return_value.status_code = 200
         json_check = {'items': [{'id': 'verified_item_id'}]}
         get_mock.return_value.json.return_value = json_check
@@ -325,7 +325,7 @@ class TestPagerDutyIncidentOutput(object):
     def test_priority_verify_success(self, get_mock):
         """PagerDutyIncidentOutput - Priority Verify Success"""
         priority_name = 'priority_name'
-        # /priorities
+        # GET /priorities
         get_mock.return_value.status_code = 200
         json_check = {'priorities': [{'id': 'verified_priority_id', 'name': priority_name}]}
         get_mock.return_value.json.return_value = json_check
@@ -339,7 +339,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_priority_verify_fail(self, get_mock):
         """PagerDutyIncidentOutput - Priority Verify Fail"""
-        # /priorities
+        # GET /priorities
         get_mock.return_value.status_code = 404
 
         context = {'incident_priority': 'priority_name'}
@@ -350,7 +350,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_priority_verify_empty(self, get_mock):
         """PagerDutyIncidentOutput - Priority Verify Empty"""
-        # /priorities
+        # GET /priorities
         get_mock.return_value.status_code = 200
         json_check = {}
         get_mock.return_value.json.return_value = json_check
@@ -363,7 +363,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_priority_verify_not_found(self, get_mock):
         """PagerDutyIncidentOutput - Priority Verify Not Found"""
-        # /priorities
+        # GET /priorities
         get_mock.return_value.status_code = 200
         json_check = {'priorities': [{'id': 'verified_priority_id', 'name': 'not_priority_name'}]}
         get_mock.return_value.json.return_value = json_check
@@ -376,7 +376,7 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_priority_verify_invalid(self, get_mock):
         """PagerDutyIncidentOutput - Priority Verify Invalid"""
-        # /priorities
+        # GET /priorities
         get_mock.return_value.status_code = 200
         json_check = {'not_priorities': [{'id': 'verified_priority_id', 'name': 'priority_name'}]}
         get_mock.return_value.json.return_value = json_check
@@ -442,18 +442,31 @@ class TestPagerDutyIncidentOutput(object):
         assert_false(item_verified)
 
     @patch('logging.Logger.info')
+    @patch('requests.put')
+    @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
-    def test_dispatch_success_good_user(self, get_mock, post_mock, log_mock):
+    def test_dispatch_success_good_user(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Good User"""
-        # /users, /users, /services
+        # GET /users, /users, /services
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 200, 200])
         json_user = {'users': [{'id': 'valid_user_id'}]}
         json_service = {'services': [{'id': 'service_id'}]}
         get_mock.return_value.json.side_effect = [json_user, json_user, json_service]
 
-        # /incidents
-        post_mock.return_value.status_code = 200
+        # POST /incidents, /v2/enqueue
+        type(post_mock.return_value).status_code = PropertyMock(side_effect=[200, 200])
+        json_incident = {'incident': {'id': 'incident_id'}}
+        json_event = {'dedup_key': 'returned_dedup_key'}
+        post_mock.return_value.json.side_effect = [json_incident, json_event]
+
+        # GET /incidents
+        get_mock_.return_value.status_code = 200
+        json_lookup = {'incidents': [{'id': 'incident_id'}]}
+        get_mock_.return_value.json.return_value = json_lookup
+
+        # PUT /incidents/indicent_id
+        put_mock.return_value.status_code = 200
 
         ctx = {'pagerduty-incident': {'assigned_user': 'valid_user'}}
 
@@ -464,19 +477,32 @@ class TestPagerDutyIncidentOutput(object):
         log_mock.assert_called_with('Successfully sent alert to %s', self.SERVICE)
 
     @patch('logging.Logger.info')
+    @patch('requests.put')
+    @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
-    def test_dispatch_success_good_policy(self, get_mock, post_mock, log_mock):
+    def test_dispatch_success_good_policy(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Good Policy"""
-         # /users, /escalation_policies, /services
+         # GET /users, /escalation_policies, /services
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 200, 200])
         json_user = {'users': [{'id': 'user_id'}]}
         json_policy = {'escalation_policies': [{'id': 'policy_id'}]}
         json_service = {'services': [{'id': 'service_id'}]}
         get_mock.return_value.json.side_effect = [json_user, json_policy, json_service]
 
-        # /incidents
-        post_mock.return_value.status_code = 200
+        # POST /incidents, /v2/enqueue
+        type(post_mock.return_value).status_code = PropertyMock(side_effect=[200, 200])
+        json_incident = {'incident': {'id': 'incident_id'}}
+        json_event = {'dedup_key': 'returned_dedup_key'}
+        post_mock.return_value.json.side_effect = [json_incident, json_event]
+
+        # GET /incidents
+        get_mock_.return_value.status_code = 200
+        json_lookup = {'incidents': [{'id': 'incident_id'}]}
+        get_mock_.return_value.json.return_value = json_lookup
+
+        # PUT /incidents/indicent_id
+        put_mock.return_value.status_code = 200
 
         ctx = {'pagerduty-incident': {'assigned_policy': 'valid_policy'}}
 
@@ -487,11 +513,14 @@ class TestPagerDutyIncidentOutput(object):
         log_mock.assert_called_with('Successfully sent alert to %s', self.SERVICE)
 
     @patch('logging.Logger.info')
+    @patch('requests.put')
+    @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
-    def test_dispatch_success_with_priority(self, get_mock, post_mock, log_mock):
+    def test_dispatch_success_with_priority(self,
+                                            get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success With Priority"""
-         # /priorities, /users, /escalation_policies, /services
+         # GET /priorities, /users, /escalation_policies, /services
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 200, 200, 200])
         json_user = {'users': [{'id': 'user_id'}]}
         json_priority = {'priorities': [{'id': 'priority_id', 'name': 'priority_name'}]}
@@ -500,8 +529,19 @@ class TestPagerDutyIncidentOutput(object):
         get_mock.return_value.json.side_effect = [json_user, json_priority,
                                                   json_policy, json_service]
 
-        # /incidents
-        post_mock.return_value.status_code = 200
+        # POST /incidents, /v2/enqueue
+        type(post_mock.return_value).status_code = PropertyMock(side_effect=[200, 200])
+        json_incident = {'incident': {'id': 'incident_id'}}
+        json_event = {'dedup_key': 'returned_dedup_key'}
+        post_mock.return_value.json.side_effect = [json_incident, json_event]
+
+        # GET /incidents
+        get_mock_.return_value.status_code = 200
+        json_lookup = {'incidents': [{'id': 'incident_id'}]}
+        get_mock_.return_value.json.return_value = json_lookup
+
+        # PUT /incidents/indicent_id
+        put_mock.return_value.status_code = 200
 
         ctx = {
             'pagerduty-incident': {
@@ -517,11 +557,13 @@ class TestPagerDutyIncidentOutput(object):
         log_mock.assert_called_with('Successfully sent alert to %s', self.SERVICE)
 
     @patch('logging.Logger.info')
+    @patch('requests.put')
+    @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
-    def test_dispatch_success_bad_user(self, get_mock, post_mock, log_mock):
+    def test_dispatch_success_bad_user(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Bad User"""
-        # /users, /users, /escalation_policies, /services
+        # GET /users, /users, /escalation_policies, /services
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 200, 200, 200])
         json_user = {'users': [{'id': 'user_id'}]}
         json_not_user = {'not_users': [{'id': 'user_id'}]}
@@ -530,8 +572,19 @@ class TestPagerDutyIncidentOutput(object):
         get_mock.return_value.json.side_effect = [json_user, json_not_user,
                                                   json_policy, json_service]
 
-        # /incidents
-        post_mock.return_value.status_code = 200
+        # POST /incidents, /v2/enqueue
+        type(post_mock.return_value).status_code = PropertyMock(side_effect=[200, 200])
+        json_incident = {'incident': {'id': 'incident_id'}}
+        json_event = {'dedup_key': 'returned_dedup_key'}
+        post_mock.return_value.json.side_effect = [json_incident, json_event]
+
+        # GET /incidents
+        get_mock_.return_value.status_code = 200
+        json_lookup = {'incidents': [{'id': 'incident_id'}]}
+        get_mock_.return_value.json.return_value = json_lookup
+
+        # PUT /incidents/indicent_id
+        put_mock.return_value.status_code = 200
 
         ctx = {'pagerduty-incident': {'assigned_user': 'invalid_user'}}
 
@@ -542,19 +595,32 @@ class TestPagerDutyIncidentOutput(object):
         log_mock.assert_called_with('Successfully sent alert to %s', self.SERVICE)
 
     @patch('logging.Logger.info')
+    @patch('requests.put')
+    @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
-    def test_dispatch_success_no_context(self, get_mock, post_mock, log_mock):
+    def test_dispatch_success_no_context(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, No Context"""
-        # /users, /escalation_policies, /services
+        # GET /users, /escalation_policies, /services
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 200, 200])
         json_user = {'users': [{'id': 'user_id'}]}
         json_policy = {'escalation_policies': [{'id': 'policy_id'}]}
         json_service = {'services': [{'id': 'service_id'}]}
         get_mock.return_value.json.side_effect = [json_user, json_policy, json_service]
 
-        # /incidents
-        post_mock.return_value.status_code = 200
+        # POST /incidents, /v2/enqueue
+        type(post_mock.return_value).status_code = PropertyMock(side_effect=[200, 200])
+        json_incident = {'incident': {'id': 'incident_id'}}
+        json_event = {'dedup_key': 'returned_dedup_key'}
+        post_mock.return_value.json.side_effect = [json_incident, json_event]
+
+        # GET /incidents
+        get_mock_.return_value.status_code = 200
+        json_lookup = {'incidents': [{'id': 'incident_id'}]}
+        get_mock_.return_value.json.return_value = json_lookup
+
+        # PUT /incidents/indicent_id
+        put_mock.return_value.status_code = 200
 
         assert_true(self._dispatcher.dispatch(descriptor=self.DESCRIPTOR,
                                               rule_name='rule_name',
@@ -567,12 +633,12 @@ class TestPagerDutyIncidentOutput(object):
     @patch('requests.get')
     def test_dispatch_failure_bad_everything(self, get_mock, post_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Failure: No User, Bad Policy, Bad Service"""
-        # /users, /users, /escalation_policies, /services
+        # GET /users, /users, /escalation_policies, /services
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 400, 400, 400])
         json_user = {'users': [{'id': 'user_id'}]}
         get_mock.return_value.json.side_effect = [json_user, dict(), dict(), dict()]
 
-        # /incidents
+        # POST /incidents
         post_mock.return_value.status_code = 400
 
         assert_false(self._dispatcher.dispatch(descriptor=self.DESCRIPTOR,
@@ -582,11 +648,13 @@ class TestPagerDutyIncidentOutput(object):
         log_mock.assert_called_with('Failed to send alert to %s', self.SERVICE)
 
     @patch('logging.Logger.info')
+    @patch('requests.put')
+    @patch('requests.get')
     @patch('requests.post')
     @patch('requests.get')
-    def test_dispatch_success_bad_policy(self, get_mock, post_mock, log_mock):
+    def test_dispatch_success_bad_policy(self, get_mock, post_mock, get_mock_, put_mock, log_mock):
         """PagerDutyIncidentOutput - Dispatch Success, Bad Policy"""
-        # /users, /escalation_policies, /escalation_policies, /services
+        # GET /users, /escalation_policies, /escalation_policies, /services
         type(get_mock.return_value).status_code = PropertyMock(side_effect=[200, 400, 200, 200])
         json_user = {'users': [{'id': 'user_id'}]}
         json_bad_policy = dict()
@@ -595,8 +663,19 @@ class TestPagerDutyIncidentOutput(object):
         get_mock.return_value.json.side_effect = [json_user, json_bad_policy,
                                                   json_good_policy, json_service]
 
-        # /incidents
-        post_mock.return_value.status_code = 200
+        # POST /incidents, /v2/enqueue
+        type(post_mock.return_value).status_code = PropertyMock(side_effect=[200, 200])
+        json_incident = {'incident': {'id': 'incident_id'}}
+        json_event = {'dedup_key': 'returned_dedup_key'}
+        post_mock.return_value.json.side_effect = [json_incident, json_event]
+
+        # GET /incidents
+        get_mock_.return_value.status_code = 200
+        json_lookup = {'incidents': [{'id': 'incident_id'}]}
+        get_mock_.return_value.json.return_value = json_lookup
+
+        # PUT /incidents/indicent_id
+        put_mock.return_value.status_code = 200
 
         ctx = {'pagerduty-incident': {'assigned_policy': 'valid_policy'}}
 
